@@ -12,7 +12,6 @@ import { Check, Clock, Download, LogOut, Search, User, Users } from 'lucide-reac
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-<<<<<<< HEAD
 import {
   Dialog,
   DialogContent,
@@ -21,8 +20,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
 
 // Define Registration type based on our Supabase table
 type Registration = {
@@ -37,11 +34,8 @@ type Registration = {
   payment_status: string;
   transaction_id: string | null;
   created_at: string;
-<<<<<<< HEAD
   is_tulip_parent: boolean;
   t_shirt_sizes: string[]; // Changed from tshirt_sizes to match database column name
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
 };
 
 const AdminPanel = () => {
@@ -49,11 +43,8 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
-<<<<<<< HEAD
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   const [statsData, setStatsData] = useState({
     totalRegistrations: 0,
     totalParticipants: 0,
@@ -70,34 +61,23 @@ const AdminPanel = () => {
   const fetchRegistrations = async () => {
     try {
       setLoading(true);
-<<<<<<< HEAD
       console.log('Fetching registrations...');
       
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
       const { data, error } = await supabase
         .from('registrations')
         .select('*')
         .order('created_at', { ascending: false });
       
       if (error) {
-<<<<<<< HEAD
         console.error('Supabase query error:', error);
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
         throw error;
       }
       
       if (data) {
-<<<<<<< HEAD
         console.log('Raw data from Supabase:', data);
         setRegistrations(data as Registration[]);
       } else {
         console.log('No data returned from Supabase');
-=======
-        setRegistrations(data as Registration[]);
-        console.log('Fetched registrations:', data);
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
       }
     } catch (error) {
       console.error('Error fetching registrations:', error);
@@ -177,11 +157,7 @@ const AdminPanel = () => {
   
   const handleExportData = () => {
     // Create CSV data
-<<<<<<< HEAD
     const headers = ['Name', 'Email', 'Phone', 'Adults', 'Kids', 'Family Type', 'Amount', 'Status', 'Transaction ID', 'Date', 'T-Shirt Sizes'];
-=======
-    const headers = ['Name', 'Email', 'Phone', 'Adults', 'Kids', 'Family Type', 'Amount', 'Status', 'Transaction ID', 'Date'];
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     const csvData = registrations.map(reg => [
       reg.name,
       reg.email,
@@ -192,12 +168,8 @@ const AdminPanel = () => {
       reg.total_amount,
       reg.payment_status,
       reg.transaction_id || 'N/A',
-<<<<<<< HEAD
       new Date(reg.created_at).toLocaleDateString(),
       reg.t_shirt_sizes ? reg.t_shirt_sizes.join(', ') : 'N/A'
-=======
-      new Date(reg.created_at).toLocaleDateString()
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     ]);
     
     const csvContent = [
@@ -205,44 +177,26 @@ const AdminPanel = () => {
       ...csvData.map(row => row.join(','))
     ].join('\n');
     
-<<<<<<< HEAD
     // Create a blob and download
-=======
-    // Create download link
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-<<<<<<< HEAD
     link.setAttribute('download', `registrations-${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-=======
-    link.setAttribute('download', `registrations_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    toast.success("Exporting data", {
-      description: "Your data is being downloaded.",
-    });
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   };
   
   const handleLogout = () => {
     navigate('/');
   };
-<<<<<<< HEAD
 
   const handleViewDetails = (registration: Registration) => {
     setSelectedRegistration(registration);
     setShowDetailsModal(true);
   };
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   
   // Filter and search the registrations
   const filteredRegistrations = registrations.filter(reg => {
@@ -258,14 +212,11 @@ const AdminPanel = () => {
     return matchesSearch;
   });
   
-<<<<<<< HEAD
   // Add debug useEffect to monitor registrations state
   useEffect(() => {
     console.log('Registrations state updated:', registrations);
   }, [registrations]);
 
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   return (
     <motion.div 
       className="max-w-7xl mx-auto"
@@ -418,14 +369,11 @@ const AdminPanel = () => {
                               <div>
                                 <p className="font-medium">{reg.name}</p>
                                 <p className="text-sm text-muted-foreground">{reg.email}</p>
-<<<<<<< HEAD
                                 {reg.is_tulip_parent && (
                                   <Badge variant="outline" className="mt-1 bg-blue-100 text-blue-800">
                                     Tulip Parent
                                   </Badge>
                                 )}
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                               </div>
                             </TableCell>
                             <TableCell>{reg.family_category}</TableCell>
@@ -449,7 +397,6 @@ const AdminPanel = () => {
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right">
-<<<<<<< HEAD
                               <div className="flex justify-end gap-2">
                                 <Button 
                                   size="sm" 
@@ -479,27 +426,6 @@ const AdminPanel = () => {
                                   </Button>
                                 )}
                               </div>
-=======
-                              {reg.payment_status === 'pending' ? (
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
-                                  className="rounded-lg h-8 bg-green-50 text-green-600 border-green-200 hover:bg-green-100 hover:text-green-700"
-                                  onClick={() => handleUpdatePaymentStatus(reg.id, 'paid')}
-                                >
-                                  Mark as Paid
-                                </Button>
-                              ) : (
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
-                                  className="rounded-lg h-8 bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100 hover:text-amber-700" 
-                                  onClick={() => handleUpdatePaymentStatus(reg.id, 'pending')}
-                                >
-                                  Mark as Pending
-                                </Button>
-                              )}
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                             </TableCell>
                           </TableRow>
                         ))
@@ -634,7 +560,6 @@ const AdminPanel = () => {
           </TabsContent>
         </Tabs>
       </Card>
-<<<<<<< HEAD
       
       {/* Add modal inside the component return statement */}
       {showDetailsModal && selectedRegistration && (
@@ -707,14 +632,11 @@ const AdminPanel = () => {
           </DialogContent>
         </Dialog>
       )}
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     </motion.div>
   );
 };
 
 export default AdminPanel;
-<<<<<<< HEAD
 
 // Remove this modal component from outside the component
 // {showDetailsModal && selectedRegistration && (
@@ -722,5 +644,3 @@ export default AdminPanel;
 //     ...
 //   </Dialog>
 // )}
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b

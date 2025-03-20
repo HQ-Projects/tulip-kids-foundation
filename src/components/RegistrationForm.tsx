@@ -7,28 +7,18 @@ import { z } from "zod";
 import { useNavigate } from 'react-router-dom';
 import { Check, ChevronsRight, CreditCard, Send, User, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-<<<<<<< HEAD
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
-=======
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-<<<<<<< HEAD
 import { Checkbox } from "@/components/ui/checkbox";
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
 import FamilyTypeCard from './FamilyTypeCard';
 import PaymentSummary from './PaymentSummary';
 import { toast } from "sonner";
 import { supabase } from '@/integrations/supabase/client';
-<<<<<<< HEAD
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { createPaymentIntent } from '@/api/stripe';
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
 
 // Define the base form schema with proper transformations
 const formSchema = z.object({
@@ -41,7 +31,6 @@ const formSchema = z.object({
   phone: z.string().min(10, {
     message: "Please enter a valid phone number.",
   }),
-<<<<<<< HEAD
   // Address fields for Indian export regulations
   addressLine1: z.string().min(1, {
     message: "Address is required.",
@@ -52,17 +41,12 @@ const formSchema = z.object({
   postalCode: z.string().min(6, {
     message: "Valid postal code is required.",
   }),
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   // Use string type for form inputs but transform to number for validation
   adultCount: z.string().transform(val => Number(val)).refine((val) => val > 0, {
     message: "At least one adult is required.",
   }),
   kidsCount: z.string().transform(val => Number(val)),
-<<<<<<< HEAD
   isTulipParent: z.boolean().default(false),
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
 });
 
 interface RegistrationFormProps {
@@ -76,7 +60,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
   const [kidsCount, setKidsCount] = useState<number>(0);
   const [tShirtSizes, setTShirtSizes] = useState<string[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-<<<<<<< HEAD
   const [isTulipParent, setIsTulipParent] = useState<boolean>(false); // New state
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [clientSecret, setClientSecret] = useState('');
@@ -84,18 +67,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
   const stripe = useStripe();
   const elements = useElements();
   
-=======
-  const navigate = useNavigate();
-
-  // Initialize the form with react-hook-form
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       phone: "",
-<<<<<<< HEAD
       addressLine1: "",
       city: "",
       postalCode: "",
@@ -105,13 +82,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
     },
   });
 
-=======
-      adultCount: "1", // String for the form field
-      kidsCount: "0", // String for the form field
-    },
-  });
-  
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   useEffect(() => {
     // Determine family category based on adults and kids count
     const determineFamilyCategory = () => {
@@ -134,15 +104,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
 
     // Calculate payment amount based on category
     const calculatePayment = () => {
-<<<<<<< HEAD
       const adultPrice = 20; // Price per adult
       const kidPrice = 20; // Price per kid
       return (adultCount * adultPrice) + (kidsCount * kidPrice);
-=======
-      const basePrice = 50; // Base price per adult
-      const kidPrice = 25; // Price per kid
-      return (adultCount * basePrice) + (kidsCount * kidPrice);
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     };
 
     setTotalAmount(calculatePayment());
@@ -156,10 +120,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
     // Convert string form values to numbers for state
     setAdultCount(Number(data.adultCount));
     setKidsCount(Number(data.kidsCount));
-<<<<<<< HEAD
     setIsTulipParent(data.isTulipParent); // Save the new field value
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     setFormStep(2);
     
     toast("Contact details saved successfully", {
@@ -174,7 +135,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
     setTShirtSizes(newSizes);
   };
 
-<<<<<<< HEAD
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     
@@ -185,9 +145,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
     
     setIsProcessingPayment(true);
     
-=======
-  const handleFinalSubmit = async () => {
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     try {
       // Get form data
       const formData = form.getValues();
@@ -201,7 +158,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
         kids_count: kidsCount,
         family_category: familyCategory,
         total_amount: totalAmount,
-<<<<<<< HEAD
         payment_status: 'pending',
         is_tulip_parent: formData.isTulipParent,
         t_shirt_sizes: tShirtSizes // Add this line to include t-shirt sizes
@@ -209,23 +165,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
       
       // Insert data into Supabase first
       const { data: regData, error: regError } = await supabase
-=======
-        payment_status: 'pending'
-      };
-      
-      toast("Processing registration...", {
-        duration: 3000,
-      });
-      
-      // Insert data into Supabase
-      const { data, error } = await supabase
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
         .from('registrations')
         .insert(registrationData)
         .select()
         .single();
       
-<<<<<<< HEAD
       if (regError) {
         console.error("Supabase error:", regError);
         throw regError;
@@ -266,13 +210,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
         },
       });
       
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
       if (error) {
         throw error;
       }
       
-<<<<<<< HEAD
       if (paymentIntent.status === 'succeeded') {
         // Update registration status to paid
         const { error: updateError } = await supabase
@@ -310,23 +251,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
       });
     } finally {
       setIsProcessingPayment(false);
-=======
-      // Navigate to success page
-      navigate('/success', { 
-        state: { 
-          registrationData: {
-            ...registrationData,
-            tShirtSizes: tShirtSizes
-          },
-          transactionId: data.id
-        } 
-      });
-    } catch (error) {
-      console.error('Error submitting registration:', error);
-      toast.error("Registration failed", {
-        description: "Please try again or contact support",
-      });
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
     }
   };
 
@@ -431,11 +355,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                           <FormControl>
                             <Select 
                               onValueChange={field.onChange} 
-<<<<<<< HEAD
                               defaultValue={String(field.value)}
-=======
-                              defaultValue={field.value}
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                             >
                               <SelectTrigger className="rounded-xl h-11">
                                 <SelectValue placeholder="Select" />
@@ -463,11 +383,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                           <FormControl>
                             <Select 
                               onValueChange={field.onChange} 
-<<<<<<< HEAD
                               defaultValue={String(field.value)}
-=======
-                              defaultValue={field.value}
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                             >
                               <SelectTrigger className="rounded-xl h-11">
                                 <SelectValue placeholder="Select" />
@@ -486,7 +402,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                       )}
                     />
                   </div>
-<<<<<<< HEAD
 
                   <div className="mt-4">
                     <FormField
@@ -573,10 +488,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                   />
                 </div>
 
-=======
-                </div>
-                
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                 <Button 
                   type="submit" 
                   className="w-full rounded-xl h-12 btn-hover-effect"
@@ -677,7 +588,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                   <CreditCard className="h-5 w-5 text-primary mr-2" />
                   <h3 className="text-lg font-medium">Payment Details</h3>
                 </div>
-<<<<<<< HEAD
                 
                 <div className="space-y-4">
                   <div className="p-3 border rounded-lg">
@@ -723,28 +633,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                     </Button>
                   </div>
                 </div>
-=======
-                <p className="text-sm text-muted-foreground">
-                  Upon submitting your registration, you'll be redirected to our secure payment gateway 
-                  to complete your payment of ${totalAmount.toFixed(2)}.
-                </p>
-              </div>
-              
-              <div className="flex gap-4">
-                <Button 
-                  variant="outline" 
-                  className="flex-1 rounded-xl h-12"
-                  onClick={() => setFormStep(2)}
-                >
-                  Back
-                </Button>
-                <Button 
-                  className="flex-1 rounded-xl h-12 bg-primary hover:bg-primary/90 text-white btn-hover-effect"
-                  onClick={handleFinalSubmit}
-                >
-                  <CreditCard className="mr-2 h-4 w-4" /> Pay ${totalAmount.toFixed(2)}
-                </Button>
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
               </div>
             </div>
           </motion.div>

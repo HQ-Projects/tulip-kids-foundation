@@ -17,11 +17,7 @@ const Index = () => {
       <div className="max-w-6xl w-full mx-auto">
         <header className="text-center mb-12">
           <Badge variant="outline" className="mb-4 px-3 py-1 bg-primary/10 text-primary border-primary/20 backdrop-blur-xs animate-fade-in">
-<<<<<<< HEAD
           Tulip Trot, A Family Fun Walk
-=======
-            Family Registration System
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
           </Badge>
           <motion.h1 
             className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4"
@@ -29,11 +25,7 @@ const Index = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-<<<<<<< HEAD
              Registration Form
-=======
-            Register Your Family
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
           </motion.h1>
           <motion.p 
             className="text-xl text-muted-foreground max-w-2xl mx-auto"

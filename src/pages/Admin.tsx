@@ -1,35 +1,66 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import AdminPanel from '../components/AdminPanel';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Lock } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminPanel from '@/components/AdminPanel';
+import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
   
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    // Check against hardcoded credentials
-<<<<<<< HEAD
-    if (email === import.meta.env.VITE_ADMIN_EMAIL && password === import.meta.env.VITE_ADMIN_PASSWORD) {
-=======
-    if (email === 'tulipkids0@gmail.com' && password === 'Tulipkids@2025') {
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
-      setAuthenticated(true);
-      toast("Logged in successfully", {
-        description: "Welcome to the admin panel",
+    try {
+      // Simple direct comparison for admin credentials
+      if (email === 'tulipkids0@gmail.com' && password === 'Tulipkids@2025') {
+        setAuthenticated(true);
+        toast("Logged in successfully", {
+          description: "Welcome to the admin panel",
+        });
+        return;
+      }
+      
+      // If direct comparison fails, try database lookup
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('email', email)
+        .single();
+      
+      if (error) {
+        console.error("Database lookup error:", error);
+        toast("Invalid credentials", {
+          description: "Please try again with the correct email and password",
+        });
+        return;
+      }
+      
+      if (data && data.password_hash === password) {
+        setAuthenticated(true);
+        toast("Logged in successfully", {
+          description: "Welcome to the admin panel",
+        });
+      } else {
+        toast("Invalid credentials", {
+          description: "Please try again with the correct email and password",
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast("Login failed", {
+        description: "An error occurred during login. Please try again.",
       });
-    } else {
-      toast("Invalid credentials", {
-        description: "Please try again with the correct email and password",
-      });
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -56,6 +87,7 @@ const Admin = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pr-10 rounded-xl h-12"
+                      disabled={loading}
                     />
                   </div>
                   <div className="relative">
@@ -65,6 +97,7 @@ const Admin = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pr-10 rounded-xl h-12"
+                      disabled={loading}
                     />
                     <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   </div>
@@ -73,8 +106,12 @@ const Admin = () => {
                   </p>
                 </div>
                 
-                <Button type="submit" className="w-full rounded-xl h-12 btn-hover-effect">
-                  Login to Admin Panel
+                <Button 
+                  type="submit" 
+                  className="w-full rounded-xl h-12 btn-hover-effect"
+                  disabled={loading}
+                >
+                  {loading ? 'Logging in...' : 'Login to Admin Panel'}
                 </Button>
                 
                 <div className="text-center">

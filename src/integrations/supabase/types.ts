@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          id: string
+          email: string
+          password_hash: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          password_hash: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          password_hash?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       registrations: {
         Row: {
           adult_count: number
@@ -23,11 +47,8 @@ export type Database = {
           total_amount: number
           transaction_id: string | null
           updated_at: string
-<<<<<<< HEAD
           is_tulip_parent: boolean
           t_shirt_sizes: string[] | null
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
         }
         Insert: {
           adult_count: number
@@ -42,11 +63,8 @@ export type Database = {
           total_amount: number
           transaction_id?: string | null
           updated_at?: string
-<<<<<<< HEAD
           is_tulip_parent?: boolean
           t_shirt_sizes?: string[] | null
-=======
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
         }
         Update: {
           adult_count?: number

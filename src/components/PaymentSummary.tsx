@@ -17,7 +17,6 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
   kidsCount, 
   totalAmount 
 }) => {
-<<<<<<< HEAD
   // Use the actual prices from RegistrationForm
   const ADULT_PRICE = 20;
   const KID_PRICE = 20;
@@ -28,10 +27,6 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
   
   // Verify that our calculated total matches the passed totalAmount
   const calculatedTotal = adultTotal + kidsTotal;
-=======
-  const BASE_ADULT_PRICE = 50;
-  const BASE_KID_PRICE = 25;
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   
   return (
     <motion.div
@@ -53,25 +48,15 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
             <div className="space-y-2">
               {adultCount > 0 && (
                 <div className="flex items-center justify-between text-sm">
-<<<<<<< HEAD
                   <span className="text-muted-foreground">{adultCount} Adult{adultCount > 1 ? 's' : ''} × ${ADULT_PRICE} each:</span>
                   <span className="font-medium">${adultTotal.toFixed(2)}</span>
-=======
-                  <span className="text-muted-foreground">Adults (x{adultCount}):</span>
-                  <span>${(adultCount * BASE_ADULT_PRICE).toFixed(2)}</span>
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                 </div>
               )}
               
               {kidsCount > 0 && (
                 <div className="flex items-center justify-between text-sm">
-<<<<<<< HEAD
                   <span className="text-muted-foreground">{kidsCount} Kid{kidsCount > 1 ? 's' : ''} × ${KID_PRICE} each:</span>
                   <span className="font-medium">${kidsTotal.toFixed(2)}</span>
-=======
-                  <span className="text-muted-foreground">Kids (x{kidsCount}):</span>
-                  <span>${(kidsCount * BASE_KID_PRICE).toFixed(2)}</span>
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                 </div>
               )}
             </div>
@@ -81,11 +66,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
           
           <div className="flex items-center justify-between font-medium">
             <span>Total Amount:</span>
-<<<<<<< HEAD
             <span className="text-lg font-bold text-primary">${calculatedTotal.toFixed(2)}</span>
-=======
-            <span className="text-lg">${totalAmount.toFixed(2)}</span>
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
           </div>
           
           <div className="text-xs text-muted-foreground">

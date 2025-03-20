@@ -11,7 +11,6 @@ const Success = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { registrationData, transactionId } = location.state || {};
-<<<<<<< HEAD
 
   // Add this to handle both naming conventions
   const totalAmount = registrationData?.totalAmount || registrationData?.total_amount || 0;
@@ -33,19 +32,6 @@ const Success = () => {
     return null; // Will redirect in the useEffect
   }
   
-=======
-  
-  useEffect(() => {
-    // If the page is accessed directly without data, redirect to home
-    if (!registrationData) {
-      navigate('/');
-    }
-    
-    // Simulate updating the database with payment status
-    console.log("Updating payment status for transaction:", transactionId);
-  }, [registrationData, transactionId, navigate]);
-  
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   const copyTransactionId = () => {
     if (transactionId) {
       navigator.clipboard.writeText(transactionId);
@@ -53,13 +39,6 @@ const Success = () => {
     }
   };
   
-<<<<<<< HEAD
-=======
-  if (!registrationData) {
-    return null; // Will redirect in the useEffect
-  }
-  
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
   return (
     <motion.div 
       className="min-h-screen py-12 px-4 sm:px-6 flex flex-col items-center justify-center bg-gradient-to-b from-background to-secondary/30"
@@ -123,11 +102,7 @@ const Success = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Total Paid:</span>
-<<<<<<< HEAD
                   <span className="font-medium">${totalAmount.toFixed(2)}</span>
-=======
-                  <span className="font-medium">${registrationData.totalAmount.toFixed(2)}</span>
->>>>>>> ffda60f784b53587f363a5f68a17b0e0ffd6809b
                 </div>
               </div>
               
