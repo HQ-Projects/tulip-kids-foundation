@@ -18,8 +18,8 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
   totalAmount 
 }) => {
   // Use the actual prices from RegistrationForm
-  const ADULT_PRICE = 20;
-  const KID_PRICE = 20;
+  const ADULT_PRICE = 20; // Changed back to $20 per person
+  const KID_PRICE = 20; // Changed back to $20 per person
   
   // Calculate individual totals
   const adultTotal = adultCount * ADULT_PRICE;

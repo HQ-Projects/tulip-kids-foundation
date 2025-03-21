@@ -199,7 +199,7 @@ const Landing = () => {
                 <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-primary mr-2 mt-0.5" />
-                    <span>Free T-Shirts for all participants</span>
+                    <span>Free T-Shirts for all participants <strong>(Kids' T-shirts will be available only for children aged 5 years and above.)</strong></span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-primary mr-2 mt-0.5" />

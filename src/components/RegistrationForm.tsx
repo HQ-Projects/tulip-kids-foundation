@@ -38,8 +38,10 @@ const formSchema = z.object({
   city: z.string().min(1, {
     message: "City is required.",
   }),
-  postalCode: z.string().min(6, {
-    message: "Valid postal code is required.",
+  postalCode: z.string().length(5, {
+    message: "US zip code must be exactly 5 digits.",
+  }).regex(/^\d{5}$/, {
+    message: "Please enter a valid 5-digit US zip code.",
   }),
   // Use string type for form inputs but transform to number for validation
   adultCount: z.string().transform(val => Number(val)).refine((val) => val > 0, {
@@ -67,6 +69,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
   const stripe = useStripe();
   const elements = useElements();
   
+  // At the component level, define constants
+  const ADULT_PRICE = 20; // Changed back to $20 per person
+  const KID_PRICE = 20; // Changed back to $20 per person
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -104,9 +110,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
 
     // Calculate payment amount based on category
     const calculatePayment = () => {
-      const adultPrice = 20; // Price per adult
-      const kidPrice = 20; // Price per kid
-      return (adultCount * adultPrice) + (kidsCount * kidPrice);
+      return (adultCount * ADULT_PRICE) + (kidsCount * KID_PRICE);
     };
 
     setTotalAmount(calculatePayment());
@@ -379,19 +383,22 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                       name="kidsCount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Number of Kids</FormLabel>
+                          <FormLabel>Number of Kids (Above 4 Years)</FormLabel>
                           <FormControl>
                             <Select 
                               onValueChange={field.onChange} 
                               defaultValue={String(field.value)}
+                              value={String(field.value)} // Add this line to ensure the value is always set
                             >
                               <SelectTrigger className="rounded-xl h-11">
-                                <SelectValue placeholder="Select" />
+                                <SelectValue placeholder="Select">
+                                  {field.value === 0 || field.value === "0" ? "0" : null}
+                                </SelectValue>
                               </SelectTrigger>
                               <SelectContent>
                                 {[0, 1, 2, 3, 4, 5].map((num) => (
                                   <SelectItem key={num} value={String(num)}>
-                                    {num}
+                                    {String(num)}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -474,12 +481,18 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                     name="postalCode"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Postal Code</FormLabel>
+                        <FormLabel>Zip Code</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="Postal code" 
+                            placeholder="5-digit zip code" 
+                            maxLength={5}
                             {...field} 
                             className="rounded-xl h-11"
+                            onChange={(e) => {
+                              // Only allow digits
+                              const value = e.target.value.replace(/\D/g, '');
+                              field.onChange(value);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
