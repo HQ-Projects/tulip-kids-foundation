@@ -82,8 +82,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
       addressLine1: "",
       city: "",
       postalCode: "",
-      adultCount: 1,
-      kidsCount: 0,
+      adultCount: "1", // Set as string to match the Select component's value type
+      kidsCount: "0", // Set as string to match the Select component's value type
       isTulipParent: false,
     },
   });
@@ -358,8 +358,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                           <FormLabel>Number of Adults</FormLabel>
                           <FormControl>
                             <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={String(field.value)}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setAdultCount(Number(value));
+                              }} 
+                              value={field.value || "1"} // Default to "1" if no value
                             >
                               <SelectTrigger className="rounded-xl h-11">
                                 <SelectValue placeholder="Select" />
@@ -386,19 +389,22 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                           <FormLabel>Number of Kids (Above 4 Years)</FormLabel>
                           <FormControl>
                             <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={String(field.value)}
-                              value={String(field.value)} // Add this line to ensure the value is always set
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setKidsCount(Number(value));
+                              }}
+                              value={field.value}
+                              defaultValue="0"
                             >
                               <SelectTrigger className="rounded-xl h-11">
-                                <SelectValue placeholder="Select">
-                                  {field.value === 0 || field.value === "0" ? "0" : null}
+                                <SelectValue>
+                                  {field.value === "0" ? "0" : undefined}
                                 </SelectValue>
                               </SelectTrigger>
                               <SelectContent>
                                 {[0, 1, 2, 3, 4, 5].map((num) => (
                                   <SelectItem key={num} value={String(num)}>
-                                    {String(num)}
+                                    {num}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
