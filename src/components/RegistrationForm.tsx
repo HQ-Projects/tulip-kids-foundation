@@ -20,7 +20,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { createPaymentIntent } from '@/api/stripe';
 
-// Define the base form schema with proper transformations
+// Define the base form schema with consistent number handling
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -43,11 +43,11 @@ const formSchema = z.object({
   }).regex(/^\d{5}$/, {
     message: "Please enter a valid 5-digit US zip code.",
   }),
-  // Use string type for form inputs but transform to number for validation
-  adultCount: z.string().transform(val => Number(val)).refine((val) => val > 0, {
+  // Use string type throughout for consistency
+  adultCount: z.string().refine((val) => Number(val) > 0, {
     message: "At least one adult is required.",
   }),
-  kidsCount: z.string().transform(val => Number(val)),
+  kidsCount: z.string().default("0"),
   isTulipParent: z.boolean().default(false),
 });
 
@@ -58,20 +58,21 @@ interface RegistrationFormProps {
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormStep }) => {
   const [familyCategory, setFamilyCategory] = useState<string>('');
-  const [adultCount, setAdultCount] = useState<number>(1);
-  const [kidsCount, setKidsCount] = useState<number>(0);
+  // Change state types to match form values (use strings)
+  const [adultCount, setAdultCount] = useState<string>("1");
+  const [kidsCount, setKidsCount] = useState<string>("0");
   const [tShirtSizes, setTShirtSizes] = useState<string[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [isTulipParent, setIsTulipParent] = useState<boolean>(false); // New state
+  const [isTulipParent, setIsTulipParent] = useState<boolean>(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [clientSecret, setClientSecret] = useState('');
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   
-  // At the component level, define constants
-  const ADULT_PRICE = 20; // Changed back to $20 per person
-  const KID_PRICE = 20; // Changed back to $20 per person
+  // Define constants
+  const ADULT_PRICE = 20;
+  const KID_PRICE = 20;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,8 +83,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
       addressLine1: "",
       city: "",
       postalCode: "",
-      adultCount: "1", // Set as string to match the Select component's value type
-      kidsCount: "0", // Set as string to match the Select component's value type
+      adultCount: "1",
+      kidsCount: "0",
       isTulipParent: false,
     },
   });
@@ -91,12 +92,16 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
   useEffect(() => {
     // Determine family category based on adults and kids count
     const determineFamilyCategory = () => {
-      if (adultCount >= 1) {
-        if (kidsCount === 0) {
+      // Convert string to number for calculations
+      const numAdults = Number(adultCount);
+      const numKids = Number(kidsCount);
+      
+      if (numAdults >= 1) {
+        if (numKids === 0) {
           return 'One Family, No Kids';
-        } else if (kidsCount === 2) {
+        } else if (numKids === 2) {
           return 'One Family, Two Kids';
-        } else if (kidsCount > 2) {
+        } else if (numKids > 2) {
           return 'One Family, Multiple Kids';
         } else {
           return 'One Family, One Kid';
@@ -110,21 +115,21 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
 
     // Calculate payment amount based on category
     const calculatePayment = () => {
-      return (adultCount * ADULT_PRICE) + (kidsCount * KID_PRICE);
+      return (Number(adultCount) * ADULT_PRICE) + (Number(kidsCount) * KID_PRICE);
     };
 
     setTotalAmount(calculatePayment());
 
     // Initialize t-shirt sizes array based on total participants
-    const totalParticipants = adultCount + kidsCount;
+    const totalParticipants = Number(adultCount) + Number(kidsCount);
     setTShirtSizes(Array(totalParticipants).fill('M'));
   }, [adultCount, kidsCount]);
 
   const onSubmitContactDetails = (data: z.infer<typeof formSchema>) => {
-    // Convert string form values to numbers for state
-    setAdultCount(Number(data.adultCount));
-    setKidsCount(Number(data.kidsCount));
-    setIsTulipParent(data.isTulipParent); // Save the new field value
+    // Store form values directly (already strings)
+    setAdultCount(data.adultCount);
+    setKidsCount(data.kidsCount);
+    setIsTulipParent(data.isTulipParent);
     setFormStep(2);
     
     toast("Contact details saved successfully", {
@@ -158,13 +163,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        adult_count: adultCount,
-        kids_count: kidsCount,
+        adult_count: Number(adultCount),
+        kids_count: Number(kidsCount),
         family_category: familyCategory,
         total_amount: totalAmount,
         payment_status: 'pending',
         is_tulip_parent: formData.isTulipParent,
-        t_shirt_sizes: tShirtSizes // Add this line to include t-shirt sizes
+        t_shirt_sizes: tShirtSizes
       };
       
       // Insert data into Supabase first
@@ -358,18 +363,15 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                           <FormLabel>Number of Adults</FormLabel>
                           <FormControl>
                             <Select 
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                                setAdultCount(Number(value));
-                              }} 
-                              value={field.value || "1"} // Default to "1" if no value
+                              onValueChange={field.onChange}
+                              value={field.value}
                             >
                               <SelectTrigger className="rounded-xl h-11">
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
                                 {[1, 2, 3, 4, 5].map((num) => (
-                                  <SelectItem key={num} value={String(num)}>
+                                  <SelectItem key={num} value={num.toString()}>
                                     {num}
                                   </SelectItem>
                                 ))}
@@ -389,10 +391,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                           <FormLabel>Number of Kids (Above 4 Years)</FormLabel>
                           <FormControl>
                             <Select 
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                                setKidsCount(Number(value));
-                              }}
+                              onValueChange={field.onChange}
                               value={field.value}
                               defaultValue="0"
                             >
@@ -403,7 +402,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
                               </SelectTrigger>
                               <SelectContent>
                                 {[0, 1, 2, 3, 4, 5].map((num) => (
-                                  <SelectItem key={num} value={String(num)}>
+                                  <SelectItem key={num} value={num.toString()}>
                                     {num}
                                   </SelectItem>
                                 ))}
@@ -529,20 +528,24 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium mb-3">Family Category</h3>
-                <FamilyTypeCard category={familyCategory} adultCount={adultCount} kidsCount={kidsCount} />
+                <FamilyTypeCard 
+                  category={familyCategory} 
+                  adultCount={Number(adultCount)} 
+                  kidsCount={Number(kidsCount)}
+                />
               </div>
               
               <div>
                 <h3 className="text-lg font-medium mb-3">T-Shirt Sizes</h3>
                 <Card className="rounded-xl overflow-hidden">
                   <CardContent className="p-4">
-                    {[...Array(adultCount + kidsCount)].map((_, index) => (
+                    {[...Array(Number(adultCount) + Number(kidsCount))].map((_, index) => (
                       <div key={index} className="flex items-center justify-between py-3 border-b last:border-0">
                         <div>
                           <p className="font-medium">
-                            {index < adultCount 
-                              ? `Adult ${adultCount > 1 ? index + 1 : ''}` 
-                              : `Child ${kidsCount > 1 ? (index - adultCount) + 1 : ''}`}
+                            {index < Number(adultCount) 
+                              ? `Adult ${Number(adultCount) > 1 ? index + 1 : ''}` 
+                              : `Child ${Number(kidsCount) > 1 ? (index - Number(adultCount)) + 1 : ''}`}
                           </p>
                         </div>
                         <Select 
@@ -597,8 +600,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ formStep, setFormSt
             <div className="space-y-6">
               <PaymentSummary 
                 familyCategory={familyCategory}
-                adultCount={adultCount}
-                kidsCount={kidsCount}
+                adultCount={Number(adultCount)}
+                kidsCount={Number(kidsCount)}
                 totalAmount={totalAmount}
               />
               

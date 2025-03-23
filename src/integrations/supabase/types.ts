@@ -11,25 +11,73 @@ export type Database = {
     Tables: {
       admin_users: {
         Row: {
-          id: string
-          email: string
-          password_hash: string
           created_at: string
+          email: string
+          id: string
+          password_hash: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          email: string
-          password_hash: string
           created_at?: string
+          email: string
+          id?: string
+          password_hash: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          email?: string
-          password_hash?: string
           created_at?: string
+          email?: string
+          id?: string
+          password_hash?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          amount: number
+          certificate_sent: boolean | null
+          created_at: string | null
+          designation: string
+          donation_type: string
+          email: string
+          first_name: string
+          id: string
+          is_anonymous: boolean | null
+          last_name: string
+          payment_id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          certificate_sent?: boolean | null
+          created_at?: string | null
+          designation: string
+          donation_type: string
+          email: string
+          first_name: string
+          id?: string
+          is_anonymous?: boolean | null
+          last_name: string
+          payment_id: string
+          status: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          certificate_sent?: boolean | null
+          created_at?: string | null
+          designation?: string
+          donation_type?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_anonymous?: boolean | null
+          last_name?: string
+          payment_id?: string
+          status?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -40,15 +88,15 @@ export type Database = {
           email: string
           family_category: string
           id: string
+          is_tulip_parent: boolean | null
           kids_count: number
           name: string
           payment_status: string
           phone: string
+          t_shirt_sizes: string[] | null
           total_amount: number
           transaction_id: string | null
           updated_at: string
-          is_tulip_parent: boolean
-          t_shirt_sizes: string[] | null
         }
         Insert: {
           adult_count: number
@@ -56,15 +104,15 @@ export type Database = {
           email: string
           family_category: string
           id?: string
+          is_tulip_parent?: boolean | null
           kids_count: number
           name: string
           payment_status?: string
           phone: string
+          t_shirt_sizes?: string[] | null
           total_amount: number
           transaction_id?: string | null
           updated_at?: string
-          is_tulip_parent?: boolean
-          t_shirt_sizes?: string[] | null
         }
         Update: {
           adult_count?: number
@@ -72,10 +120,12 @@ export type Database = {
           email?: string
           family_category?: string
           id?: string
+          is_tulip_parent?: boolean | null
           kids_count?: number
           name?: string
           payment_status?: string
           phone?: string
+          t_shirt_sizes?: string[] | null
           total_amount?: number
           transaction_id?: string | null
           updated_at?: string
@@ -87,7 +137,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_admin_password: {
+        Args: {
+          email: string
+          password: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
